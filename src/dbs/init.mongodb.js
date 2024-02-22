@@ -20,7 +20,7 @@ class Database {
   //connect
   connect(type = "mongodb") {
     // nếu dev thì in ra log còn product thì thôi
-    if (1 === 1) {
+    if (process.env.NODE_ENV !== 'pro') {
       // in lại tất cả các hoạt động khi query
       mongoose.set("debug", true);
       mongoose.set("debug", { color: true });
