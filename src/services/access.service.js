@@ -1,12 +1,12 @@
 "use strict";
 
-const { RoleShop } = require("../constants/roles");
 const shopModel = require("../models/shop.model");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const KeyTokenService = require("./keyToken.service");
 const { createTokenPair } = require("../auth/authUtils");
 const { getInfoData} = require("../utils");
+const { RoleShop } = require("../utils/constants");
 
 class AccessService {
   static signUp = async ({ name, email, password }) => {
@@ -40,42 +40,43 @@ class AccessService {
       //STEP 3: create accecs token and refresh token
       if (newShop) {
         // created privateKey and publicKey by crypto
-        const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-          modulusLength: 4096,
-          publicKeyEncoding: {
-            type: "pkcs1",
-            format: "pem",
-          },
-          privateKeyEncoding: {
-            type: "pkcs1",
-            format: "pem",
-          },
-        });
+        // const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
+        //   modulusLength: 4096,
+        //   publicKeyEncoding: {
+        //     type: "pkcs1",
+        //     format: "pem",
+        //   },
+        //   privateKeyEncoding: {
+        //     type: "pkcs1",
+        //     format: "pem",
+        //   },
+        // });
+
+        // tạo privateKey và publicKey bằng crypto đơn giản hơn cách trên
+        const privateKey = crypto.randomBytes(64).toString('hex');
+        const publicKey = crypto.randomBytes(64).toString('hex');
 
         console.log({ privateKey, publicKey });
         // sau khi tạo thành công privateKey và publicKey thì lưu publicKey vào db
         // bằng cách gọi hàm createKeyToken từ KeyTokenService
-        const publicKeyString = await KeyTokenService.createKeyToken({
+
+        const keyStore = await KeyTokenService.createKeyToken({
           userId: newShop._id,
           publicKey,
+          privateKey
         });
 
-        if (!publicKeyString) {
+        if (!keyStore) {
           return {
             code: "xxx",
             message: "publicKeyString error",
           };
         }
 
-        console.log(`Public Key String: ${publicKeyString}`);
-
-        const pubLishKeyObejct = crypto.createPublicKey(publicKeyString);
-
-        console.log(`Public Key Object: ${pubLishKeyObejct}`);
         // tạo access token và refresh token
         const tokens = await createTokenPair(
           { userId: newShop._id, email },
-          pubLishKeyObejct,
+          publicKey,
           privateKey
         );
 
@@ -98,6 +99,7 @@ class AccessService {
         metadata: null,
       };
     } catch (error) {
+      console.log(error);
       return {
         code: "xxx",
         message: error.message,

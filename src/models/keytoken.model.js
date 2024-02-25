@@ -1,3 +1,5 @@
+"use strict";
+
 const { Schema, model } = require("mongoose"); // Erase if already required
 
 // chứa keyPublicKey và refreshToken
@@ -12,6 +14,10 @@ var keyTokenSchema = new Schema(
       type: Schema.Types.ObjectId,
       required: true,
       ref: "Shop",
+    },
+    privateKey: {
+      type: String,
+      required: true,
     },
     publicKey: {
       type: String,

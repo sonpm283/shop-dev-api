@@ -5,6 +5,12 @@ const RoleShop = {
   ADMIN: "ADMIN",
 };
 
+const HEADER = {
+  API_KEY: "x-api-key",
+  AUTHORIZATION: "authorization",
+};
+
 module.exports = {
   RoleShop,
+  HEADER,
 };
