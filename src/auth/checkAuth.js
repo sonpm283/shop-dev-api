@@ -5,7 +5,6 @@ const { HEADER } = require("../utils/constants");
 
 const apiKey = async (req, res, next) => {
   try {
-    console.log("request", req.headers[HEADER.API_KEY]);
     const key = req.headers[HEADER.API_KEY]?.toString();
 
     // nếu không có key thì trả về 403
@@ -26,32 +25,41 @@ const apiKey = async (req, res, next) => {
     // gán objKey vào req để sử dụng ở middleware tiếp theo
     req.objKey = objKey;
     return next();
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 // check permission
 const permission = (permission) => {
   return async (req, res, next) => {
-    if(!req.objKey.permissions) {
+    if (!req.objKey.permissions) {
       return res.status(403).json({
         message: "Permission denied",
       });
     }
 
-    console.log('permission::', req.objKey.permissions);
+    console.log("permission::", req.objKey.permissions);
     const validPermission = req.objKey.permissions.includes(permission);
 
-    if(!validPermission) {
+    if (!validPermission) {
       return res.status(403).json({
         message: "Permission denied",
       });
     }
 
-    return next()
+    return next();
+  };
+};
+
+const asyncHandler = (fn) => {
+  return (req, res, next) => {
+    fn(req, res, next).catch(next);
   };
 };
 
 module.exports = {
   apiKey,
-  permission
+  permission,
+  asyncHandler,
 };

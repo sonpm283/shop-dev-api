@@ -15,6 +15,7 @@ class KeyTokenService {
       //neu tao thanh cong thi tra ve publicKey
       return tokens ? tokens.publicKey : null;
     } catch (error) {
+      console.log(error);
       return error;
     }
   };
