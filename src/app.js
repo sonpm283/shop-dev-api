@@ -3,6 +3,7 @@ const compression = require("compression");
 const express = require("express");
 const morgan = require("morgan");
 const { default: helmet } = require("helmet");
+var cors = require("cors");
 const app = express();
 
 // init middlewares
@@ -11,6 +12,7 @@ app.use(helmet()); // security
 app.use(compression()); // giảm dung lượng của data khi vẫn chuyển dữ liệu
 app.use(express.json()); // parse json
 app.use(express.urlencoded({ extended: true })); // parse urlencoded
+app.use(cors()); // cors
 
 // init db
 require("./dbs/init.mongodb");

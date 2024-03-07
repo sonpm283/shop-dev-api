@@ -1,5 +1,5 @@
-const RoleShop = {
-  SHOP: "SHOP",
+const RoleUser = {
+  USER: "USER",
   WRITER: "WRITER",
   EDITOR: "EDITOR",
   ADMIN: "ADMIN",
@@ -11,6 +11,6 @@ const HEADER = {
 };
 
 module.exports = {
-  RoleShop,
+  RoleUser,
   HEADER,
 };
